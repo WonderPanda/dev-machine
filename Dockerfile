@@ -27,7 +27,21 @@ WORKDIR /root
 RUN rm -f ~/.zshrc
 RUN mv .zshrc.pre-oh-my-zsh .zshrc
 
-# RUN curl -LSfs https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh | sh -s -- --git cantino/mcfly
+RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+RUN cargo install zellij
+
+RUN curl https://get.volta.sh | bash
+RUN /root/.volta/bin/volta install node@14
+RUN /root/.volta/bin/volta install node
+RUN /root/.volta/bin/volta install yarn
+
+# RUN volta install node
+
+RUN touch /root/.zsh_history
+RUN curl -LSfs https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh | sh -s -- --git cantino/mcfly
+RUN echo 'eval "$(mcfly init zsh)"' >> .zshrc
+
 
 # RUN touch /root/.bash_history
 

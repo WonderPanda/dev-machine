@@ -8,5 +8,7 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
+    volumes:
+      - ./playbook:/home/playbook
     # volumes:
     #   - ./test:/root

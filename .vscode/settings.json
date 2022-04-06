@@ -1,0 +1,6 @@
+{
+  "yaml.schemas": {
+    "file:///home/jesse/.vscode/extensions/atlassian.atlascode-2.10.11/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml",
+    "https://raw.githubusercontent.com/ansible-community/schemas/main/f/ansible-playbook.json": "file:///home/jesse/code/dev-machine/playbook/playbook.yaml"
+  }
+}

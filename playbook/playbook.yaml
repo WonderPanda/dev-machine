@@ -1,0 +1,43 @@
+- hosts: localhost
+  become: true
+
+  # pre_tasks:
+  #   - name: Update Apt
+  #     become: true
+  #     apt:
+  #       force_apt_get: true
+  #       update_cache: true
+  #       state: present
+  #     tags:
+  #       - install
+  #       - core
+
+  tasks:
+    - name: Install core packages
+      become: true
+      apt:
+        name: ["build-essential", "neovim", "stow", "curl", "zsh", "git"]
+      tags:
+        - install
+        - core
+
+    # - name: Configure SSH
+    #   ansible.builtin.authorized_key:
+    #     key: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
+    #     user: "{{ lookup('env', 'USER') }}"
+    #     state: present
+
+    - name: Clone dotfiles
+      ansible.builtin.git:
+        repo: 'git@github.com:WonderPanda/dotfiles.git'
+        dest: "{{ lookup('env', 'HOME') }}/code/dotfiles"
+        update: yes
+        key_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
+        accept_hostkey: yes
+        version: master
+      tags:
+        - install
+        - dotfiles
+        - stow
+
+    - include: tasks/rust.yaml

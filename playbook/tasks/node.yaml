@@ -1,0 +1,37 @@
+- name: check if volta is installed
+  shell: command -v volta
+  register: volta_exists
+  ignore_errors: true
+  tags:
+    - node
+
+- name: download volta installer
+  when: volta_exists is failed
+  get_url:
+    url: https://get.volta.sh
+    dest: /tmp/volta.sh
+    mode: "0755"
+    force: "yes"
+  tags:
+    - node
+
+- name: install volta
+  when: volta_exists is failed
+  shell: /tmp/volta.sh
+  tags:
+    - node
+
+- name: install node 14
+  shell: volta install node@14
+  tags:
+    - node
+
+- name: install node lts
+  shell: volta install node
+  tags:
+    - node
+
+- name: install yarn
+  shell: volta install yarn
+  tags:
+    - node

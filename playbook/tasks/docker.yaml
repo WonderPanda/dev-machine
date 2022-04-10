@@ -1,0 +1,61 @@
+- name: Install dependent packages
+  become: true
+  become_user: root
+  apt:
+    name: ["ca-certificates", "gnupg", "lsb-release"]
+  tags:
+    - docker
+
+- name: Download GPG Key
+  get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /tmp/docker-gpg
+    mode: "0755"
+    force: "yes"
+  tags:
+    - docker
+
+- name: Add GPG Key
+  become: true
+  become_user: root
+  ansible.builtin.shell: gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker-gpg
+  tags:
+    - docker
+
+- name: Add docker stable repository
+  become: true
+  become_user: root
+  ansible.builtin.shell: >
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  tags:
+    - docker
+
+- name: Update Apt
+  become: true
+  become_user: root
+  apt:
+    force_apt_get: true
+    update_cache: true
+    state: present
+  tags:
+    - docker
+
+- name: Install docker packages
+  become: true
+  become_user: root
+  apt:
+    name: ["docker-ce", "docker-ce-cli", "containerd.io"]
+  tags:
+    - docker
+
+- name: Download Docker Compose stable
+  become: true
+  become_user: root
+  get_url:
+    # TODO: maybe move to playbook vars? /docker-compose-$(uname -s)-$(uname -m)
+    url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: "0755"
+    force: "yes"
+  tags:
+    - docker

@@ -1,0 +1,15 @@
+- name: Download McFly Installer
+  get_url:
+    url: https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh
+    dest: /tmp/mcfly-install.sh
+    mode: "0755"
+    force: "yes"
+  tags:
+    - misc
+
+- name: Install McFly
+  become: true
+  become_user: root
+  ansible.builtin.shell: /tmp/mcfly-install.sh -s -- --git cantino/mcfly
+  tags:
+    - misc

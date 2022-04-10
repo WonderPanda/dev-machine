@@ -1,0 +1,29 @@
+- name: Change shell to zsh
+  become_user: root
+  become: true
+  shell: chsh -s $(which zsh)
+  tags:
+    - zsh
+
+- name: Check if Oh-My-Zsh is installed
+  ansible.builtin.stat:
+    path: "{{ lookup('env', 'HOME') }}/.oh-my-zsh"
+  register: oh_my_stats
+  tags:
+    - zsh
+
+- name: Download Oh-My-Zsh installer
+  when: oh_my_stats.stat.exists == False
+  get_url:
+    url: https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh
+    dest: /tmp/omz-install.sh
+    mode: "0755"
+    force: true
+  tags:
+    - zsh
+
+- name: Install Oh-My-Zsh
+  when: oh_my_stats.stat.exists == False
+  shell: /tmp/omz-install.sh
+  tags:
+    - zsh

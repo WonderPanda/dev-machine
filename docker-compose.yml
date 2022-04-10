@@ -1,14 +1,11 @@
 version: '3.7'
 
-# volumes:
-#   : {}
-
 services:
-  cmd:
+  dev-machine:
     build:
       dockerfile: Dockerfile
       context: .
-    volumes:
-      - ./playbook:/home/playbook
+    # uncomment for working with the playbook directly inside
+    # the container more easily
     # volumes:
-    #   - ./test:/root
+    #   - ./playbook:/home/jesse/playbook

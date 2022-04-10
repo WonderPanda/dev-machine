@@ -1,0 +1,37 @@
+- name: Clone dotfiles
+  become_user: jesse
+  become: true
+  ansible.builtin.git:
+    repo: "git@github.com:WonderPanda/dotfiles.git"
+    dest: "{{ lookup('env', 'HOME') }}/dotfiles"
+    update: yes
+    key_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
+    accept_hostkey: yes
+    version: master
+  tags:
+    - install
+    - dotfiles
+    - stow
+
+- name: Remove default bashrc
+  become_user: jesse
+  file:
+    path: $HOME/.bashrc
+    state: absent
+  tags:
+    - stow
+
+- name: Remove default zshrc
+  become_user: jesse
+  file:
+    path: $HOME/.zshrc
+    state: absent
+  tags:
+    - stow
+
+- name: Stow dotfiles
+  ansible.builtin.shell:
+    chdir: $HOME/dotfiles
+    cmd: stow stow
+  tags:
+    - stow

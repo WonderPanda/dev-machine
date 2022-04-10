@@ -1,43 +1,71 @@
 - hosts: localhost
   become: true
+  become_user: jesse
+  vars:
+    source_key: "./.ssh/id_rsa"
+    dest_key: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
 
-  # pre_tasks:
-  #   - name: Update Apt
-  #     become: true
-  #     apt:
-  #       force_apt_get: true
-  #       update_cache: true
-  #       state: present
-  #     tags:
-  #       - install
-  #       - core
-
-  tasks:
-    - name: Install core packages
+  pre_tasks:
+    - name: Update Apt
       become: true
+      become_user: root
       apt:
-        name: ["build-essential", "neovim", "stow", "curl", "zsh", "git"]
+        force_apt_get: true
+        update_cache: true
+        state: present
       tags:
         - install
         - core
 
-    # - name: Configure SSH
-    #   ansible.builtin.authorized_key:
-    #     key: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
-    #     user: "{{ lookup('env', 'USER') }}"
-    #     state: present
-
-    - name: Clone dotfiles
-      ansible.builtin.git:
-        repo: 'git@github.com:WonderPanda/dotfiles.git'
-        dest: "{{ lookup('env', 'HOME') }}/code/dotfiles"
-        update: yes
-        key_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
-        accept_hostkey: yes
-        version: master
+  tasks:
+    - name: Install core packages
+      become: true
+      become_user: root
+      apt:
+        name:
+          ["build-essential", "neovim", "stow", "curl", "zsh", "git", "xclip"]
       tags:
         - install
-        - dotfiles
-        - stow
+        - core
 
-    - include: tasks/rust.yaml
+    - name: Run SSH tasks
+      ansible.builtin.include_tasks:
+        file: tasks/ssh.yaml
+      tags:
+        - ssh
+
+    - name: Run dotfiles tasks
+      ansible.builtin.include_tasks:
+        file: tasks/dotfiles.yaml
+      tags:
+        - dotfiles
+
+    - name: Run ZSH tasks
+      ansible.builtin.include_tasks:
+        file: tasks/zsh.yaml
+      tags:
+        - zsh
+
+    - name: Run Rust tasks
+      ansible.builtin.include_tasks:
+        file: tasks/rust.yaml
+      tags:
+        - rust
+
+    - name: Run node tasks
+      ansible.builtin.include_tasks:
+        file: tasks/node.yaml
+      tags:
+        - node
+
+    - name: Run misc tasks
+      ansible.builtin.include_tasks:
+        file: tasks/misc.yaml
+      tags:
+        - misc
+
+    - name: Run docker tasks
+      ansible.builtin.include_tasks:
+        file: tasks/docker.yaml
+      tags:
+        - docker

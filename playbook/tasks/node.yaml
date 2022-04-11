@@ -22,16 +22,16 @@
     - node
 
 - name: install node 14
-  shell: volta install node@14
+  shell: /home/jesse/.volta/bin/volta install node@14
   tags:
     - node
 
 - name: install node lts
-  shell: volta install node
+  shell: /home/jesse/.volta/bin/volta install node@14 install node
   tags:
     - node
 
 - name: install yarn
-  shell: volta install yarn
+  shell: /home/jesse/.volta/bin/volta install node@14 install yarn
   tags:
     - node

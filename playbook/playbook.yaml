@@ -22,8 +22,17 @@
       become: true
       become_user: root
       apt:
-        name:
-          ["build-essential", "neovim", "stow", "curl", "zsh", "git", "xclip"]
+        name: [
+            "build-essential",
+            "neovim",
+            "stow",
+            "curl",
+            "zsh",
+            "git",
+            "xclip",
+            "postgresql-client"
+            # "exa",
+          ]
       tags:
         - install
         - core
@@ -46,17 +55,17 @@
       tags:
         - zsh
 
-    - name: Run Rust tasks
-      ansible.builtin.include_tasks:
-        file: tasks/rust.yaml
-      tags:
-        - rust
+    # - name: Run Rust tasks
+    #   ansible.builtin.include_tasks:
+    #     file: tasks/rust.yaml
+    #   tags:
+    #     - rust
 
-    - name: Run node tasks
-      ansible.builtin.include_tasks:
-        file: tasks/node.yaml
-      tags:
-        - node
+    # - name: Run node tasks
+    #   ansible.builtin.include_tasks:
+    #     file: tasks/node.yaml
+    #   tags:
+    #     - node
 
     - name: Run misc tasks
       ansible.builtin.include_tasks:
@@ -64,8 +73,8 @@
       tags:
         - misc
 
-    - name: Run docker tasks
-      ansible.builtin.include_tasks:
-        file: tasks/docker.yaml
-      tags:
-        - docker
+    # - name: Run docker tasks
+    #   ansible.builtin.include_tasks:
+    #     file: tasks/docker.yaml
+    #   tags:
+    #     - docker

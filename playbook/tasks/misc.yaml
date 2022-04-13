@@ -1,4 +1,12 @@
+- name: check if mcfly is installed
+  shell: command -v mcfly
+  register: mcfly_exists
+  ignore_errors: true
+  tags:
+    - misc
+
 - name: Download McFly Installer
+  when: mcfly_exists is failed
   get_url:
     url: https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh
     dest: /tmp/mcfly-install.sh
@@ -8,8 +16,60 @@
     - misc
 
 - name: Install McFly
+  when: mcfly_exists is failed
   become: true
   become_user: root
   ansible.builtin.shell: /tmp/mcfly-install.sh -s -- --git cantino/mcfly
+  tags:
+    - misc
+
+- name: Check if gogh is cloned
+  ansible.builtin.stat:
+    path: "{{ lookup('env', 'HOME') }}/code/third-party/gogh"
+  register: gogh_stats
+  tags:
+    - misc
+
+- name: Clone gogh
+  when: gogh_stats.stat.exists == False
+  ansible.builtin.git:
+    repo: "git@github.com:Mayccoll/Gogh.git"
+    dest: "{{ lookup('env', 'HOME') }}/code/third-party/gogh"
+    update: yes
+    key_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
+    accept_hostkey: yes
+    version: master
+  tags:
+    - misc
+
+- name: Install gruvbox theme
+  ansible.builtin.shell:
+    cmd: TERMINAL=gnome-terminal ./gruvbox-dark.sh
+    chdir: "{{ lookup('env', 'HOME') }}/code/third-party/gogh/themes"
+  tags:
+    - misc
+
+- name: check if starship is installed
+  shell: command -v starship
+  register: starship_exists
+  ignore_errors: true
+  tags:
+    - misc
+
+- name: Download Starship Installer
+  when: starship_exists is failed
+  get_url:
+    url: https://starship.rs/install.sh
+    dest: /tmp/starship-install.sh
+    mode: "0755"
+    force: "yes"
+  tags:
+    - misc
+
+- name: Install Starship
+  when: starship_exists is failed
+  become: true
+  become_user: root
+  ansible.builtin.shell: /tmp/starship-install.sh -y
   tags:
     - misc

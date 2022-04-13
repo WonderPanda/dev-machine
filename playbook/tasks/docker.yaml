@@ -59,3 +59,16 @@
     force: "yes"
   tags:
     - docker
+
+- name: Add Docker Group
+  become: true
+  become_user: root
+  ansible.builtin.group:
+    name: docker
+  tags:
+    - docker
+
+- name: Add user to docker group
+  ansible.builtin.shell: sudo usermod -aG docker $USER
+  tags:
+    - docker

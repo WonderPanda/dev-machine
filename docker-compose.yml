@@ -7,5 +7,5 @@ services:
       context: .
     # uncomment for working with the playbook directly inside
     # the container more easily
-    # volumes:
-    #   - ./playbook:/home/jesse/playbook
+    volumes:
+      - ./playbook:/home/jesse/playbook

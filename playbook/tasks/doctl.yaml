@@ -1,0 +1,39 @@
+- name: Check if doctl is installed
+  shell: command -v doctl
+  register: doctl_exists
+  ignore_errors: true
+  tags:
+    - doctl
+
+- name: Download doctl binary
+  when: doctl_exists is failed
+  get_url:
+    url: https://github.com/digitalocean/doctl/releases/download/v1.73.0/doctl-1.73.0-linux-amd64.tar.gz
+    dest: /tmp/doctl.tar.gz
+    force: true
+  tags:
+    - doctl
+
+- name: Unzip doctl binary
+  when: doctl_exists is failed
+  ansible.builtin.shell:
+    cmd: tar xf doctl.tar.gz
+    chdir: /tmp
+  tags:
+    - doctl
+
+- name: Move doctl binary to usr/local/bin
+  when: doctl_exists is failed
+  become: true
+  become_user: root
+  ansible.builtin.shell:
+    cmd: mv /tmp/doctl /usr/local/bin
+  tags:
+    - doctl
+
+- name: Init doctl auth
+  when: doctl_exists is failed
+  ansible.builtin.shell:
+    cmd: doctl auth init -t "{{ lookup('file', '../tokens/doctl') }}"
+  tags:
+    - doctl

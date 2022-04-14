@@ -26,3 +26,10 @@ ansible-playbook --ask-vault-pass -K playbook/playbook.yaml
 - Slack
 - VsCode
 - Discord
+
+### Snap
+
+Unforunately it seems for some applications it will be easier to stick with Snap. In the case of Datagrip, due to the Flatpak sandbox the application is unable to access Postgres client binaries eg pg_restore and pg_dump which are necessary for dev work
+
+- Datagrip: `sudo snap install datagrip --classic`
+- btop: `sudo snap install btop`

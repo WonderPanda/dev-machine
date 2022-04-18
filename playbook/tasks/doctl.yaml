@@ -37,3 +37,9 @@
     cmd: doctl auth init -t "{{ lookup('file', '../tokens/doctl') }}"
   tags:
     - doctl
+
+- name: Save cluster config
+  ansible.builtin.shell:
+    cmd: doctl k cluster kubeconfig save dev-pandaverse-k8s-cluster
+  tags:
+    - doctl

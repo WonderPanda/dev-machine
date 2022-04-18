@@ -1,4 +1,12 @@
+- name: Check if docker is installed
+  shell: command -v docker
+  register: docker_exists
+  ignore_errors: true
+  tags:
+    - docker
+
 - name: Install dependent packages
+  when: docker_exists is failed
   become: true
   become_user: root
   apt:
@@ -7,6 +15,7 @@
     - docker
 
 - name: Download GPG Key
+  when: docker_exists is failed
   get_url:
     url: https://download.docker.com/linux/ubuntu/gpg
     dest: /tmp/docker-gpg
@@ -16,6 +25,7 @@
     - docker
 
 - name: Add GPG Key
+  when: docker_exists is failed
   become: true
   become_user: root
   ansible.builtin.shell: gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker-gpg
@@ -23,6 +33,7 @@
     - docker
 
 - name: Add docker stable repository
+  when: docker_exists is failed
   become: true
   become_user: root
   ansible.builtin.shell: >
@@ -31,6 +42,7 @@
     - docker
 
 - name: Update Apt
+  when: docker_exists is failed
   become: true
   become_user: root
   apt:
@@ -41,6 +53,7 @@
     - docker
 
 - name: Install docker packages
+  when: docker_exists is failed
   become: true
   become_user: root
   apt:
@@ -48,19 +61,8 @@
   tags:
     - docker
 
-- name: Download Docker Compose stable
-  become: true
-  become_user: root
-  get_url:
-    # TODO: maybe move to playbook vars? /docker-compose-$(uname -s)-$(uname -m)
-    url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
-    dest: /usr/local/bin/docker-compose
-    mode: "0755"
-    force: "yes"
-  tags:
-    - docker
-
 - name: Add Docker Group
+  when: docker_exists is failed
   become: true
   become_user: root
   ansible.builtin.group:
@@ -69,6 +71,27 @@
     - docker
 
 - name: Add user to docker group
+  when: docker_exists is failed
   ansible.builtin.shell: sudo usermod -aG docker $USER
+  tags:
+    - docker
+
+- name: Check if docker-compose is installed
+  shell: command -v docker-compose
+  register: docker_compose_exists
+  ignore_errors: true
+  tags:
+    - docker
+
+- name: Download Docker Compose stable
+  when: docker_compose_exists is failed
+  become: true
+  become_user: root
+  get_url:
+    # TODO: maybe move to playbook vars? /docker-compose-$(uname -s)-$(uname -m)
+    url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: "0755"
+    force: "yes"
   tags:
     - docker

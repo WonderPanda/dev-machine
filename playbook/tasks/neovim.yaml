@@ -1,0 +1,38 @@
+- name: Check if neovim is installed
+  shell: command -v nvim
+  register: neovim_exists
+  ignore_errors: true
+  tags:
+    - neovim
+
+- name: Download neovim binary
+  when: neovim_exists is failed
+  ansible.builtin.get_url:
+    url: https://github.com/neovim/neovim/releases/download/v0.7.0/nvim-linux64.deb
+    dest: /tmp/neovim.deb
+    force: true
+  tags:
+    - neovim
+
+- name: Install neovim
+  when: neovim_exists is failed
+  become: true
+  become_user: root
+  ansible.builtin.shell:
+    # cmd: tar xzvf neovim.tar.gz
+    cmd: apt-get install -y ./neovim.deb
+    chdir: /tmp
+  tags:
+    - neovim
+# - name: Move neovim binary to usr/local/bin
+#   when: neovim_exists is failed
+#   become: true
+#   become_user: root
+#   ansible.builtin.shell:
+#     cmd: mv /tmp/nvim-linux64/bin/nvim /usr/local/bin
+#   tags:
+#     - neovim
+
+# Download nvim-linux64.tar.gz
+# Extract: tar xzvf nvim-linux64.tar.gz
+# Run ./nvim-linux64/bin/nvim

@@ -1,0 +1,54 @@
+- name: Check if kubectl is installed
+  shell: command -v kubectl
+  register: kubectl_exists
+  ignore_errors: true
+  tags:
+    - k8s
+
+- name: Install dependent packages
+  when: kubectl_exists is failed
+  become: true
+  become_user: root
+  apt:
+    name: ["apt-transport-https"]
+  tags:
+    - k8s
+
+- name: Download Google Cloud Signing Key
+  when: kubectl_exists is failed
+  become: true
+  become_user: root
+  get_url:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    dest: /usr/share/keyrings/kubernetes-archive-keyring.gpg
+  tags:
+    - k8s
+
+- name: Add k8s apt repository
+  when: kubectl_exists is failed
+  become: true
+  become_user: root
+  ansible.builtin.shell: >
+    echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+  tags:
+    - k8s
+
+- name: Update Apt
+  when: kubectl_exists is failed
+  become: true
+  become_user: root
+  apt:
+    force_apt_get: true
+    update_cache: true
+    state: present
+  tags:
+    - k8s
+
+- name: Install kubectl
+  when: kubectl_exists is failed
+  become: true
+  become_user: root
+  apt:
+    name: ["kubectl"]
+  tags:
+    - k8s

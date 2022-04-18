@@ -24,7 +24,7 @@
       apt:
         name: [
             "build-essential",
-            "neovim",
+            # "neovim",
             "stow",
             "curl",
             "zsh",
@@ -55,6 +55,12 @@
       tags:
         - zsh
 
+    - name: Run neovim tasks
+      ansible.builtin.include_tasks:
+        file: tasks/neovim.yaml
+      tags:
+        - neovim
+
     - name: Run Rust tasks
       ansible.builtin.include_tasks:
         file: tasks/rust.yaml
@@ -78,6 +84,12 @@
         file: tasks/docker.yaml
       tags:
         - docker
+
+    - name: Run k8s tasks
+      ansible.builtin.include_tasks:
+        file: tasks/k8s.yaml
+      tags:
+        - k8s
 
     - name: Run doctl tasks
       ansible.builtin.include_tasks:

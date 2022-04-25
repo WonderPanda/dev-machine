@@ -2,6 +2,13 @@
 
 ## Steps
 
+It is necessary for `ansible` to be installed before the playbook can be run
+
+```shell
+RUN add-apt-repository --yes --update ppa:ansible/ansible
+RUN apt-get install -y ansible
+```
+
 ```shell
 curl https://codeload.github.com/WonderPanda/dev-machine/zip/refs/heads/main -o playbook-repo.zip
 unzip playbook-repo.zip
@@ -11,14 +18,6 @@ ansible-playbook --ask-vault-pass -K playbook/playbook.yaml
 ```
 
 ## Setup not yet managed by Ansible
-
-### Flatpak
-
-- Obsidian: `flatpak install flathub md.obsidian.Obsidian`
-- Datagrip: `flatpak install flathub com.jetbrains.DataGrip`
-- Spotify: `flatpak install flathub com.spotify.Client`
-- Telegram: `flatpak install flathub org.telegram.desktop`
-- Ferdi: `flatpak install flathub com.getferdi.Ferdi`
 
 ### Deb
 
@@ -33,3 +32,14 @@ Unforunately it seems for some applications it will be easier to stick with Snap
 
 - Datagrip: `sudo snap install datagrip --classic`
 - btop: `sudo snap install btop`
+
+## Bugs
+
+- For some reason the symlinks for ~/.zshrc are not properly getting set up when initially invoking `stow`. Right now I am manually deleting this file and then re-running stow to establish the link to the dotfiles codebase
+
+## Future tasks
+
+- [ ] Install fonts: [Fantasque Sans Mono Nerd Font](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FantasqueSansMono)
+- [ ] Manage 4k fonts using `gnome-tweaks`
+- [ ] Automatically set up sync using Syncthing
+- [ ]

@@ -31,7 +31,7 @@
             "git",
             "xclip",
             "postgresql-client",
-            # "exa",
+            "exa",
           ]
       tags:
         - install
@@ -96,3 +96,9 @@
         file: tasks/doctl.yaml
       tags:
         - doctl
+
+    - name: flatpak
+      ansible.builtin.include_tasks:
+        file: tasks/flatpak.yaml
+      tags:
+        - flatpak

@@ -1,0 +1,15 @@
+- name: Add flathub remote
+  shell: flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+  tags:
+    - flatpak
+
+- name: Install flathub apps
+  shell: flatpak install flathub "{{item}}" -y
+  loop:
+    - md.obsidian.Obsidian
+    - com.jetbrains.DataGrip
+    - com.spotify.Client
+    - org.telegram.desktop
+    - com.getferdi.Ferdi
+  tags:
+    - flatpak

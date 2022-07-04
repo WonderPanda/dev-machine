@@ -39,7 +39,13 @@ Unforunately it seems for some applications it will be easier to stick with Snap
 
 ## Future tasks
 
-- [ ] Install fonts: [Fantasque Sans Mono Nerd Font](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FantasqueSansMono)
-- [ ] Manage 4k fonts using `gnome-tweaks`
+- [ ] Install fonts (Can just be copied into ~/.fonts directory):
+  - [ ] [Fantasque Sans Mono Nerd Font](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FantasqueSansMono)
+  - [ ] Inter
+  - [ ] Victor Mono
+- [ ] Manage 4k fonts and scaling using `gnome-tweaks`
 - [ ] Automatically set up sync using Syncthing
-- [ ]
+- [ ] Manage Pulumi installation and CLI setup
+  - [ ] Include the pulumi credentials file in Ansible vault. Located at `~/.pulumi/credentials.json`
+- [ ] Manage gh cli authentication and extensions. Will need to encrypt a token in the vault and then use `gh auth login --with-token < mytoken.txt`
+  - [ ] Automate the installation of [gh-dash](https://github.com/dlvhdr/gh-dash)

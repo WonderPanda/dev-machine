@@ -52,3 +52,36 @@
     name: ["kubectl"]
   tags:
     - k8s
+
+- name: Check if k9s is installed
+  shell: command -v k9s
+  register: k9s_exists
+  ignore_errors: true
+  tags:
+    - k8s
+
+- name: Download k9s
+  when: k9s_exists is failed
+  ansible.builtin.get_url:
+    url: https://github.com/derailed/k9s/releases/download/v0.25.18/k9s_Linux_x86_64.tar.gz
+    dest: /tmp/k9s.tar.gz
+    force: true
+  tags:
+    - k8s
+
+- name: Unzip k9s binary
+  when: k9s_exists is failed
+  ansible.builtin.shell:
+    cmd: tar xf k9s.tar.gz
+    chdir: /tmp
+  tags:
+    - k8s
+
+- name: Move k9s binary to usr/local/bin
+  when: k9s_exists is failed
+  become: true
+  become_user: root
+  ansible.builtin.shell:
+    cmd: mv /tmp/k9s /usr/local/bin
+  tags:
+    - k8s

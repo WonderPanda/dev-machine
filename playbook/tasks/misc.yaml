@@ -73,3 +73,35 @@
   ansible.builtin.shell: /tmp/starship-install.sh -y
   tags:
     - misc
+
+- name: Check if rclone is installed
+  shell: command -v rclone
+  register: rclone_exists
+  ignore_errors: true
+  tags:
+    - misc
+
+- name: Install rclone
+  when: rclone_exists is failed
+  become: true
+  become_user: root
+  ansible.builtin.shell: curl https://rclone.org/install.sh | sudo bash
+  tags:
+    - misc
+    - rclone
+
+- name: Check if gh cli is installed
+  shell: command -v gh
+  register: gh_exists
+  ignore_errors: true
+  tags:
+    - misc
+
+- name: Install gh cli
+  when: gh_exists is failed
+  become: true
+  become_user: root
+  ansible.builtin.apt:
+    deb: https://github.com/cli/cli/releases/download/v2.9.0/gh_2.9.0_linux_amd64.deb
+  tags:
+    - misc

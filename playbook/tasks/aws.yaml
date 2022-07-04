@@ -1,0 +1,33 @@
+- name: Check if AWS cli is installed
+  ansible.builtin.shell: command -v aws
+  register: aws_exists
+  ignore_errors: true
+  tags:
+    - aws
+
+- name: Download AWS installer
+  when: aws_exists is failed
+  ansible.builtin.get_url:
+    url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+    dest: /tmp/aws-cli.zip
+    force: yes
+  tags:
+    - aws
+
+- name: Extract AWS installer
+  when: aws_exists is failed
+  ansible.builtin.shell:
+    cmd: unzip aws-cli.zip
+    chdir: /tmp
+  tags:
+    - aws
+
+- name: Install AWS cli
+  when: aws_exists is failed
+  become: true
+  become_user: root
+  ansible.builtin.shell:
+    cmd: ./aws/install
+    chdir: /tmp
+  tags:
+    - aws

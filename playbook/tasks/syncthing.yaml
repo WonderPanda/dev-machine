@@ -1,0 +1,46 @@
+- name: Check if syncthing is installed
+  shell: command -v syncthing
+  register: syncthing_exists
+  ignore_errors: true
+  tags:
+    - syncthing
+
+- name: Add GPG keys
+  when: syncthing_exists is failed
+  become: true
+  become_user: root
+  get_url:
+    url: https://syncthing.net/release-key.gpg
+    dest: /usr/share/keyrings/syncthing-archive-keyring.gpg
+    force: yes
+  tags:
+    - syncthing
+
+- name: Add Syncthing stable repo
+  when: syncthing_exists is failed
+  become: true
+  become_user: root
+  ansible.builtin.shell:
+    cmd: echo "deb [signed-by=/usr/share/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing candidate" | sudo tee /etc/apt/sources.list.d/syncthing.list
+  tags:
+    - syncthing
+
+- name: Update Apt
+  when: syncthing_exists is failed
+  become: true
+  become_user: root
+  apt:
+    force_apt_get: true
+    update_cache: true
+    state: present
+  tags:
+    - syncthing
+
+- name: Install Syncthing
+  when: syncthing_exists is failed
+  become: true
+  become_user: root
+  apt:
+    name: ["syncthing"]
+  tags:
+    - syncthing

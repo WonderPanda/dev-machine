@@ -32,6 +32,7 @@
             "xclip",
             "postgresql-client",
             "exa",
+            "rclone",
           ]
       tags:
         - install
@@ -102,3 +103,15 @@
         file: tasks/flatpak.yaml
       tags:
         - flatpak
+
+    - name: syncthing
+      ansible.builtin.include_tasks:
+        file: tasks/syncthing.yaml
+      tags:
+        - syncthing
+
+    - name: aws
+      ansible.builtin.include_tasks:
+        file: tasks/aws.yaml
+      tags:
+        - aws

@@ -21,17 +21,17 @@
   tags:
     - node
 
-- name: install node 14
-  shell: /home/jesse/.volta/bin/volta install node@14
-  tags:
-    - node
-
 - name: install node lts
-  shell: /home/jesse/.volta/bin/volta install node@14 install node
+  shell: /home/jesse/.volta/bin/volta install node@lts
   tags:
     - node
 
-- name: install yarn
-  shell: /home/jesse/.volta/bin/volta install node@14 install yarn
+- name: install yarn 1
+  shell: /home/jesse/.volta/bin/volta install yarn@1
+  tags:
+    - node
+
+- name: install pnpm
+  shell: /home/jesse/.volta/bin/volta install pnpm
   tags:
     - node
